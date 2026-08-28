@@ -1,0 +1,6 @@
+{
+  "name": "CROP PULSE",
+  "description": "AI-powered Plant Leaf Disease Detection, U-Net segmentation, severity estimation, and farmer bulk analytics platform.",
+  "requestFramePermissions": ["camera", "geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,49 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // User profile access: Users can read and write only their own profile
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+    
+    // Single Diagnoses: Users can read and write their own diagnosis records
+    match /diagnoses/{diagnosisId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+    
+    // Farmer Batches: Farmers can read, create, update, delete only their own batches
+    match /batches/{batchId} {
+      allow read: if isAuthenticated() && resource.data.farmerId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.farmerId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && resource.data.farmerId == request.auth.uid;
+      
+      // Batch Images subcollection
+      match /images/{imageId} {
+        allow read, write: if isAuthenticated();
+      }
+    }
+    
+    // Disease Knowledge Base: Read-only for authenticated or app users
+    match /diseaseKnowledge/{diseaseId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    // Model Configurations: Read-only
+    match /modelConfigurations/{configId} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}

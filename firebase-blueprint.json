@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "UserProfile": {
+      "collection": "users",
+      "fields": {
+        "uid": { "type": "string", "required": true },
+        "fullName": { "type": "string", "required": true },
+        "email": { "type": "string", "required": true },
+        "mobileNumber": { "type": "string", "required": false },
+        "role": { "type": "string", "required": true, "enum": ["USER", "FARMER"] },
+        "location": { "type": "string", "required": false },
+        "stateName": { "type": "string", "required": false },
+        "language": { "type": "string", "required": false },
+        "completedOnboarding": { "type": "boolean", "required": true },
+        "cameraPermissionGranted": { "type": "boolean", "required": false },
+        "photoPermissionGranted": { "type": "boolean", "required": false },
+        "createdAt": { "type": "string", "required": true },
+        "updatedAt": { "type": "string", "required": true }
+      },
+      "rules": {
+        "read": "request.auth != null && request.auth.uid == resource.id",
+        "write": "request.auth != null && request.auth.uid == resource.id"
+      }
+    },
+    "Diagnosis": {
+      "collection": "diagnoses",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "userId": { "type": "string", "required": true },
+        "timestamp": { "type": "string", "required": true },
+        "cropType": { "type": "string", "required": true },
+        "plantName": { "type": "string", "required": true },
+        "scientificName": { "type": "string", "required": true },
+        "diseaseName": { "type": "string", "required": true },
+        "confidence": { "type": "number", "required": true },
+        "severityPercentage": { "type": "number", "required": true },
+        "severityLevel": { "type": "string", "required": true },
+        "isHealthy": { "type": "boolean", "required": true }
+      },
+      "rules": {
+        "read": "request.auth != null && resource.data.userId == request.auth.uid",
+        "create": "request.auth != null && request.resource.data.userId == request.auth.uid",
+        "update": "request.auth != null && resource.data.userId == request.auth.uid",
+        "delete": "request.auth != null && resource.data.userId == request.auth.uid"
+      }
+    },
+    "Batch": {
+      "collection": "batches",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "farmerId": { "type": "string", "required": true },
+        "batchName": { "type": "string", "required": true },
+        "cropType": { "type": "string", "required": true },
+        "timestamp": { "type": "string", "required": true },
+        "totalImages": { "type": "number", "required": true },
+        "infectedCount": { "type": "number", "required": true },
+        "healthyCount": { "type": "number", "required": true },
+        "averageSeverity": { "type": "number", "required": true },
+        "outbreakRisk": { "type": "string", "required": true }
+      },
+      "rules": {
+        "read": "request.auth != null && resource.data.farmerId == request.auth.uid",
+        "create": "request.auth != null && request.resource.data.farmerId == request.auth.uid",
+        "update": "request.auth != null && resource.data.farmerId == request.auth.uid",
+        "delete": "request.auth != null && resource.data.farmerId == request.auth.uid"
+      }
+    }
+  }
+}
